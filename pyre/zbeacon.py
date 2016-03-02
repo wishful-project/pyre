@@ -43,6 +43,9 @@ MULTICAST_GRP = '225.25.25.25'
 class ZBeacon(object):
 
     def __init__(self, ctx, pipe, *args, **kwargs):
+
+        self.sel_iface = kwargs.get('sel_iface', None)
+
         self.ctx = ctx                #  ZMQ context
         self.pipe = pipe              #  Actor command pipe
         self.udpsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -171,6 +174,9 @@ class ZBeacon(object):
 
                 if interface.is_link_local:
                     logger.debug("Interface {0} is a link-local device.".format(name))
+                    continue
+
+                if self.sel_iface is not None and name != self.sel_iface:
                     continue
 
                 self.address = interface.ip

@@ -30,7 +30,7 @@ class Pyre(object):
         Kwargs:
             ctx: PyZMQ Context, if not specified a new context will be created
         """
-        super(Pyre, self).__init__(*args, **kwargs)
+        super(Pyre, self).__init__()
         ctx = kwargs.get('ctx')
         if ctx == None:
             ctx = zmq.Context()
@@ -38,10 +38,12 @@ class Pyre(object):
         self._uuid = None
         self._name = name
         self.verbose = False
+
+        my_sel_iface = kwargs.get('sel_iface', None)
         self.inbox, self._outbox = zhelper.zcreate_pipe(self._ctx)
 
         # Start node engine and wait for it to be ready
-        self.actor = ZActor(self._ctx, PyreNode, self._outbox)
+        self.actor = ZActor(self._ctx, PyreNode, self._outbox, sel_iface=my_sel_iface)
         # Send name, if any, to node backend 
         if (self._name):
             self.actor.send_unicode("SET NAME", zmq.SNDMORE)

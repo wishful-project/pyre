@@ -20,6 +20,9 @@ logger = logging.getLogger(__name__)
 class PyreNode(object):
 
     def __init__(self, ctx, pipe, outbox, *args, **kwargs):
+
+        self._sel_iface = kwargs.get('sel_iface', None)
+
         self._ctx = ctx                             #... until we use zbeacon actor
         self._pipe = pipe                           # We send command replies and signals to the pipe
                                                     # Pipe back to application
@@ -61,7 +64,7 @@ class PyreNode(object):
         # gossip our endpoint to others.
         if self.beacon_port:
             # Start beacon discovery
-            self.beacon = ZActor(self._ctx, ZBeacon)
+            self.beacon = ZActor(self._ctx, ZBeacon, sel_iface=self._sel_iface)
 
             if self._verbose:
                 self.beacon.send_unicode("VERBOSE")
