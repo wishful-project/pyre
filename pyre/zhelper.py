@@ -62,7 +62,8 @@ def zthread_fork(ctx, func, *args, **kwargs):
     b.connect(iface)
 
     thread = threading.Thread(target=func, args=((ctx, b) + args), kwargs=kwargs)
-    thread.daemon = False
+    thread.daemon = True
+    thread.setDaemon(True)
     thread.start()
 
     return a
